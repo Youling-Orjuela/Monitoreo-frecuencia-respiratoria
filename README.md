@@ -8,6 +8,8 @@ Según varias investigaciones se ha demostrado que la frecuencia respiratoria es
 ## Variables físicas
 En la ventilación hay direfentes variables físicas fundamentales, como el volumen que es la cantidad de aire dentro del sistema respiratorio y se divide en el volumen corriente y el volumen residual; la variable de presión que puede ser alveolar, pleural y transpulmonar; el flujo de aire describe como va cambiando el volumen por unidad de tiempo.
 
+(Profundizar más en esta parte: Qué otras variables hay, qué sensores miden cada una de esas variables aunque esa parte puede ir en el sensor a emplear o  se puede quitar la sección de que sensor emplear y juntarla con esta parte)
+
 ## Sensor a emplear
 Sensor de Gas
 ## Adquisición de la señal
