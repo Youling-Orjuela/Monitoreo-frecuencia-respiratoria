@@ -1,5 +1,5 @@
 # Monitoreo del patrón y frecuencia respiratoria
-## Introducción.
+## Introducción
 La respiración es un proceso esencial que permite el intercambio de oxígeno y dióxido de carbono, logrando así garantizar la homeostasis. Desde el punto de vista de la ingeniería biomédica este proceso se puede analizar como un sistema dinámico representado por variables físicas que se pueden cuantificar, como lo es la presión, el volumen, el flujo, la frecuencia respiratoria y más. Todas estas variables permiten el desarrollo de modelos cuantitativos del sistema respiratorio [1].
 
 
