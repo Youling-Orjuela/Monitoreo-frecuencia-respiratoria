@@ -43,3 +43,11 @@ las razones?
 
 [4] D. R. Goldhill et al., “A physiologically-based early warning score…,”
     Anaesthesia, 2005.
+    
+[5] Guyton, A. C., & Hall, J. E. Textbook of Medical Physiology. Elsevier.
+
+[6] West, J. B. Respiratory Physiology: The Essentials. Lippincott Williams & Wilkins.
+
+[7] Levitzky, M. G. Pulmonary Physiology. McGraw-Hill.
+
+[8] Ganong, W. F. Review of Medical Physiology. McGraw-Hill.
