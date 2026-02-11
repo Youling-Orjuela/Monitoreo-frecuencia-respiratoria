@@ -16,7 +16,9 @@ La suma de estas variables, y otras más que se han analizado en múltiples estu
 
 
 ## Sensor a emplear
-Sensor de Gas
+En el proceso respiratorio, una de las variables físicas de mayor relevancia es la expulsión de dióxido de carbono de los pulmones en la fase de exhalación. La concentración del CO2 en el aire exhalado presenta un comportamiento periódico, directamente asociado al ciclo respiratorio de la persona, lo que permite utilizarla como una variable indirecta para la determinación de la frecuencia respiratoria, gracias a su comportamiento cíclico. En cada espiración se genera un incremento temporal en la concentración de CO2, mientras que durante la inspiración dicha concentración decrece, dando lugar a una señal oscilatoria que puede ser analizada tanto en el dominio del tiempo, como en el dominio de la frecuencia y así dar lugar a la cantidad de respiraciones por minuto.
+
+Para la adquisición de esta variable; y derivado de esto calcular la frecuencia respiratoria, se hace uso de un sensor de gas "MQ-3", cuya respuesta se da en las variaciones en la concentración de gases presentes en el aire exhalado. Aunque el MQ-3 es comúnmente utilizado para la detección de alcohol, su principio de funcionamiento fundamentados en las variaciones de resistencia del material sensor frente a los gases reductores, permite detectar variaciones relativas en la composición del aire exhalado por el usuario. Al adaptar el sensor cerca de la vía respiratoria, es posible registrar una mayor concentración de CO2 en la fase espiratoria de cada respiracion, con el fin de determinar la frecuencia respiratoria del usuario de una manera no invasiva.
 ## Adquisición de la señal
 Aún hace falta
 ## Resultados obtenidos
