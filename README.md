@@ -62,4 +62,4 @@ las razones?
 
 [8] Ganong, W. F. Review of Medical Physiology. McGraw-Hill.
 
-[9] S. Prabhu, “In-Depth: How MQ3 Alcohol Sensor Works? & Interface it with Arduino,” Last Minute Engineers, Jan. 20, 2026. https://lastminuteengineers.com/mq3-alcohol-sensor-arduino-tutorial
+[9] S. Prabhu, “In-Depth: How MQ3 Alcohol Sensor Works? & Interface it with Arduino,” Last Minute Engineers.
