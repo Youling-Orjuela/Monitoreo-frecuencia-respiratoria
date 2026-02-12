@@ -23,7 +23,288 @@ Para la adquisición de esta variable; y derivado de esto calcular la frecuencia
 El sensor de gas MQ-3 es un sensor semiconductor de óxido metálico (MOS) que puede detetar variaciones en la composición del aire, esto lo hace  midiendo los cambios en la resistencia eléctrica. La parte más sensible del sensor esta recubierta de óxido de estaño (SnO₂) y se mantiene calentado internamente para facilitar las reacciones quimicas con los gases involucrados. En aire limpio, el oxígeno se adhiere en la superficie del material, atrayendo a los electrones del mismo y aumentando la resistencia; cuando hay gases reductores como el alcohol o compuestos del aire exhalado, estas moléculas reaccionan con el oxígeno , liberando electrones y disminuyendo la resistencia del sensor. La variación de resistencia genera una señal eléctrica proporcional a la cantidad de gas detectado y puede leerse como un voltaje analógico o digital que detecta cambios cíclicos en la composición del aire [9].
 
 ## Adquisición de la señal
-Aún hace falta
+## Adquisición de la señal
+## Configuración.
+```
+matlab
+port = "COM6";
+baud = 115200;
+
+T = input("¿Cuántos segundos deseas capturar?: ");
+if isempty(T) || ~isnumeric(T) || T <= 0
+    error("Tiempo inválido.");
+end
+
+Ts_plot = 0.10;
+Y_FIXED = [0 3];
+VREF = 3.0;   % inhalación sube: v_inv = VREF - v
+
+smoothSec_live   = 0.12;
+baselineSec_live = 3.0;
+G_live = 6;
+
+```
+T define la duración total de captura.
+Y_FIXED=[0 3] fija el eje Y para que la escala sea consistente.
+VREF define la inversión. Si tu señal está “al revés” (inhalación baja), con v_inv = VREF - v la inviertes para que inhalación sea un pico (máximo), que es más fácil de detectar.
+Los parámetros smoothSec_live, baselineSec_live, G_live son solo para que la gráfica en vivo se vea bien: no cambian el archivo crudo guardado.
+## Abrir serial + preparar buffers
+```
+s = serialport(port, baud);
+configureTerminator(s, "LF");
+flush(s);
+disp("Conectado. Capturando voltaje (CRUDO)...");
+
+Fs_est = 200;
+Nmax = max(2000, ceil(Fs_est * T * 1.3));
+t = zeros(Nmax, 1);
+v = zeros(Nmax, 1);
+k = 0;
+```
+Aquí se conecta MATLAB al módulo Bluetooth/serial y limpias el buffer (flush).
+33Preasignas memoria (t, v) para que el loop sea rápido (evitas que MATLAB crezca el array de a 1, que es lento).
+Fs_est solo es una estimación para reservar memoria; el Fs real lo calculas después con median(diff(t)).
+## Figura de captura in vivo
+```
+figure("Name","Respiración (BT) - CAPTURA CRUDA (visual invertida)","Color","w");
+ax = gca; grid on; grid minor;
+xlabel("Tiempo (s)"); ylabel("Voltaje (V)");
+set(ax, "FontSize", 12);
+set(ax, "YLim", Y_FIXED, "YLimMode", "manual");
+set(ax, "XLim", [0 T],   "XLimMode", "manual");
+axis(ax, "manual"); zoom off; pan off;
+
+hReal = animatedline("LineWidth", 1.6);
+hAmp  = animatedline("LineWidth", 2.2, "LineStyle","--");
+legend("Suavizado (visual)", "Amplificado (visual)", "Location","northwest");
+```
+Esta es tu primera figura, la que usas para ver que estás capturando bien.
+animatedline permite ir agregando puntos sin redibujar toda la curva (más eficiente).
+Se fijan ejes para que el gráfico no “brinque” y puedas comparar entre capturas.
+## Loop de captura
+```
+lastPlot = 0;
+t0 = tic;
+idxSmoothStart = 1;
+idxBaseStart   = 1;
+
+while toc(t0) < T
+    line = strtrim(readline(s));
+    parts = split(line, ",");
+    val = str2double(parts(end));
+
+    if ~isnan(val) && isfinite(val)
+        k = k + 1;
+
+        if k > Nmax
+            t = [t; zeros(Nmax,1)]; %#ok<AGROW>
+            v = [v; zeros(Nmax,1)]; %#ok<AGROW>
+            Nmax = numel(t);
+        end
+
+        ti = toc(t0);
+        t(k) = ti;
+        v(k) = val;
+
+        if (ti - lastPlot) >= Ts_plot
+            v_inv_live = VREF - v(1:k);
+
+            while idxSmoothStart < k && (ti - t(idxSmoothStart)) > smoothSec_live
+                idxSmoothStart = idxSmoothStart + 1;
+            end
+            v_smooth = mean(v_inv_live(idxSmoothStart:k));
+
+            while idxBaseStart < k && (ti - t(idxBaseStart)) > baselineSec_live
+                idxBaseStart = idxBaseStart + 1;
+            end
+            base = mean(v_inv_live(idxBaseStart:k));
+
+            v_amp = base + G_live*(v_smooth - base);
+            v_amp = min(max(v_amp, Y_FIXED(1)), Y_FIXED(2));
+
+            addpoints(hReal, ti, v_smooth);
+            addpoints(hAmp,  ti, v_amp);
+
+            set(ax, "XLim", [0 T]); set(ax, "YLim", Y_FIXED);
+            drawnow limitrate nocallbacks;
+            lastPlot = ti;
+        end
+    end
+end
+
+clear s;
+t = t(1:k);
+v = v(1:k);
+```
+readline lee cada muestra que envía el micro.
+t(k) es el tiempo real medido en MATLAB (por eso después puedes calcular Fs).
+Se grafica invertido (v_inv_live) para que inhalación sea subida.
+El suavizado y baseline en vivo son “promedios con ventana temporal”, no con “N muestras”, entonces funcionan bien aunque cambie el muestreo por jitter Bluetooth.
+Se guarda v crudo, sin filtrar: eso es crucial para análisis offline confiable.
+## Guardar la señal (CSV-MAT)
+```
+stamp = datestr(now,"yyyymmdd_HHMMSS");
+raw_csv = "resp_raw_" + string(T) + "s_" + stamp + ".csv";
+raw_mat = "resp_raw_" + string(T) + "s_" + stamp + ".mat";
+
+writetable(table(t, v, 'VariableNames', {'time_s','voltage_V'}), raw_csv);
+save(raw_mat, "t", "v", "T", "VREF");
+
+Fs_aprox = numel(t)/T;
+fprintf("\nCRUDO guardado:\n- %s\n- %s\nMuestras: %d | Fs aprox: %.2f Hz\n", raw_csv, raw_mat, numel(t), Fs_aprox);
+
+```
+CSV: para abrir en Excel/Python/otros.
+MAT: para MATLAB con todo intacto (mejor para reproducibilidad).
+Se imprime Fs aprox solo como referencia rápida.
+## Offline: Fs real + inversión + detrend + filtro
+```
+dt = median(diff(t));
+Fs = 1/dt;
+
+v_inv = VREF - v;
+x_raw = detrend(v_inv, 1);
+x_raw = x_raw - mean(x_raw);
+
+f1 = 0.05; f2 = 0.70; ord = 4;
+[b,a] = butter(ord, [f1 f2]/(Fs/2), "bandpass");
+x_bp = filtfilt(b, a, x_raw);
+
+smoothSec_pk = 0.35;
+W = max(3, round(smoothSec_pk*Fs));
+x_blk = movmean(x_bp, W);
+
+```
+Fs real con median(diff(t)): robusto ante jitter.
+x_raw es el crudo invertido sin deriva (limpio para filtrar).
+x_bp es la señal filtrada en la banda respiratoria.
+x_blk es la señal negra: una versión más estable para encontrar máximos.
+## Detección de picos
+```
+maxRPM = 30;
+MinPeakDistSamp = max(1, round((60/maxRPM) * Fs));
+prom = 0.30 * std(x_blk);
+
+[~, locC] = findpeaks(x_blk, ...
+    "MinPeakDistance", MinPeakDistSamp, ...
+    "MinPeakProminence", prom);
+
+refWinSec = 0.60;
+refWin = max(3, round(refWinSec*Fs));
+
+locR = zeros(size(locC));
+for i = 1:numel(locC)
+    c = locC(i);
+    i1 = max(1, c - refWin);
+    i2 = min(numel(x_bp), c + refWin);
+    [~,im] = max(x_bp(i1:i2));
+    locR(i) = i1 + im - 1;
+end
+locR = unique(locR, "stable");
+
+peakTimes = t(locR);
+RPM_pk = NaN;
+if numel(peakTimes) >= 2
+    RPM_pk = 60 / median(diff(peakTimes));
+end
+
+```
+findpeaks(x_blk) evita que el ruido/habla haga “picos falsos”.
+Refinamiento en x_bp corrige el desplazamiento que introduce el suavizado.
+RR final temporal: 60 / mediana(periodos) → robusto ante 1 respiración rara.
+## Gráfica de picos
+```
+figure("Color","w");
+plot(t, x_bp,  "LineWidth", 1.0); grid on; hold on;
+plot(t, x_blk, "LineWidth", 1.4);
+plot(peakTimes, x_blk(locR), "o", "MarkerSize", 7);
+xlabel("Tiempo (s)"); ylabel("Amplitud");
+title(sprintf("Picos refinados sobre NEGRA | RPM=%.2f | picos=%d", RPM_pk, numel(locR)));
+legend("Filtrada (x_{bp})","Negra (x_{blk})","Picos (refinados)");
+
+x_raw_vis = movmean(x_raw, max(3, round(0.10*Fs)));
+figure("Color","w");
+plot(t, x_raw_vis, "LineWidth", 1.2); grid on; hold on;
+plot(peakTimes, x_raw_vis(locR), "o", "MarkerSize", 7);
+xlabel("Tiempo (s)"); ylabel("Crudo invertido (vis)");
+title(sprintf("Picos (mismos tiempos) sobre CRUDO | RPM=%.2f", RPM_pk));
+legend("Crudo invertido (vis)","Picos");
+
+```
+La primera figura es el “argumento fuerte”: picos sobre señal negra/filtrada.
+La segunda es validación: “los picos también existen en el crudo”, no son artefacto.
+## PSD Welch
+```
+trimSec = 2.0;
+idx0 = find(t >= trimSec, 1, "first");
+if isempty(idx0), idx0 = 1; end
+
+x_psd = x_blk(idx0:end);
+x_psd = x_psd - mean(x_psd);
+
+winSec = 10;
+winLen = max(32, round(winSec*Fs));
+if winLen > numel(x_psd), winLen = max(32, floor(numel(x_psd)/2)); end
+win = hamming(winLen);
+nover = round(0.5*winLen);
+nfft = max(1024, 2^nextpow2(winLen));
+
+[Pxx, fpsd] = pwelch(x_psd, win, nover, nfft, Fs);
+
+band = (fpsd >= f1) & (fpsd <= f2);
+
+if ~isnan(RPM_pk)
+    f_center = RPM_pk/60;
+    bwPSD = 0.08;
+    band2 = band & (fpsd >= max(f1, f_center-bwPSD)) & (fpsd <= min(f2, f_center+bwPSD));
+    if any(band2)
+        [~,iMax] = max(Pxx(band2)); fb = fpsd(band2);
+        f_dom = fb(iMax);
+    else
+        [~,iMax] = max(Pxx(band)); fb = fpsd(band);
+        f_dom = fb(iMax);
+    end
+else
+    [~,iMax] = max(Pxx(band)); fb = fpsd(band);
+    f_dom = fb(iMax);
+end
+
+RPM_psd = 60*f_dom;
+
+figure("Color","w");
+plot(fpsd, Pxx, "LineWidth", 1.2); grid on; hold on;
+xline(f_dom, "--");
+xlabel("Frecuencia (Hz)"); ylabel("PSD");
+title(sprintf("PSD (Welch) | Dominante = %.3f Hz (%.2f RPM)", f_dom, RPM_psd));
+xlim([0 2]);
+
+```
+Recortas el inicio (trimSec) porque ahí suele haber transitorio y deriva.
+Welch: promedia espectros y es más estable que FFT simple.
+El “truco” para que cuadre: si ya tienes RPM_pk, obligas a PSD a buscar el dominante cerca de esa frecuencia.
+Esto evita que “gane” un armónico del habla o un componente lento no respiratorio.
+## Resultados + guardado procesado
+```
+fprintf("\nRESULTADOS:\n");
+if ~isnan(RPM_pk)
+    fprintf("- RPM por picos: %.2f RPM | picos=%d\n", RPM_pk, numel(locR));
+else
+    fprintf("- RPM por picos: No estimable (pocos picos)\n");
+end
+fprintf("- RPM por PSD (Welch): %.2f RPM (f=%.3f Hz)\n", RPM_psd, f_dom);
+
+proc_mat = "resp_proc_" + string(T) + "s_" + stamp + ".mat";
+save(proc_mat, ...
+    "t","v","v_inv","Fs","VREF", ...
+    "x_raw","x_bp","x_blk", ...
+    "locC","locR","peakTimes","RPM_pk", ...
+    "Pxx","fpsd","f_dom","RPM_psd", ...
+    "f1","f2","ord","trimSec","winSec","nfft");
+
+fprintf("- Procesado guardado: %s\n", proc_mat);
+
+```
+Te deja un “paquete reproducible” con todo lo necesario para un informe: señal cruda, señal filtrada, RR por picos, RR por PSD, etc.
 ## Resultados obtenidos
 ### Respiración normal
 #### Captura de la señal
