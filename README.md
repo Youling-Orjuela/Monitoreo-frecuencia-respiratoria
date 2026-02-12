@@ -23,8 +23,8 @@ Para la adquisición de esta variable; y derivado de esto calcular la frecuencia
 El sensor de gas MQ-3 es un sensor semiconductor de óxido metálico (MOS) que puede detetar variaciones en la composición del aire, esto lo hace  midiendo los cambios en la resistencia eléctrica. La parte más sensible del sensor esta recubierta de óxido de estaño (SnO₂) y se mantiene calentado internamente para facilitar las reacciones quimicas con los gases involucrados. En aire limpio, el oxígeno se adhiere en la superficie del material, atrayendo a los electrones del mismo y aumentando la resistencia; cuando hay gases reductores como el alcohol o compuestos del aire exhalado, estas moléculas reaccionan con el oxígeno , liberando electrones y disminuyendo la resistencia del sensor. La variación de resistencia genera una señal eléctrica proporcional a la cantidad de gas detectado y puede leerse como un voltaje analógico o digital que detecta cambios cíclicos en la composición del aire [9].
 
 ## Adquisición de la señal
-## Adquisición de la señal
-## Configuración.
+
+### Configuración.
 ```
 matlab
 port = "COM6";
@@ -141,7 +141,7 @@ t(k) es el tiempo real medido en MATLAB (por eso después puedes calcular Fs).
 Se grafica invertido (v_inv_live) para que inhalación sea subida.
 El suavizado y baseline en vivo son “promedios con ventana temporal”, no con “N muestras”, entonces funcionan bien aunque cambie el muestreo por jitter Bluetooth.
 Se guarda v crudo, sin filtrar: eso es crucial para análisis offline confiable.
-## Guardar la señal (CSV-MAT)
+### Guardar la señal (CSV-MAT)
 ```
 stamp = datestr(now,"yyyymmdd_HHMMSS");
 raw_csv = "resp_raw_" + string(T) + "s_" + stamp + ".csv";
@@ -157,7 +157,7 @@ fprintf("\nCRUDO guardado:\n- %s\n- %s\nMuestras: %d | Fs aprox: %.2f Hz\n", raw
 CSV: para abrir en Excel/Python/otros.
 MAT: para MATLAB con todo intacto (mejor para reproducibilidad).
 Se imprime Fs aprox solo como referencia rápida.
-## Offline: Fs real + inversión + detrend + filtro
+### Offline: Fs real + inversión + detrend + filtro
 ```
 dt = median(diff(t));
 Fs = 1/dt;
@@ -179,7 +179,7 @@ Fs real con median(diff(t)): robusto ante jitter.
 x_raw es el crudo invertido sin deriva (limpio para filtrar).
 x_bp es la señal filtrada en la banda respiratoria.
 x_blk es la señal negra: una versión más estable para encontrar máximos.
-## Detección de picos
+### Detección de picos
 ```
 maxRPM = 30;
 MinPeakDistSamp = max(1, round((60/maxRPM) * Fs));
@@ -212,7 +212,7 @@ end
 findpeaks(x_blk) evita que el ruido/habla haga “picos falsos”.
 Refinamiento en x_bp corrige el desplazamiento que introduce el suavizado.
 RR final temporal: 60 / mediana(periodos) → robusto ante 1 respiración rara.
-## Gráfica de picos
+### Gráfica de picos
 ```
 figure("Color","w");
 plot(t, x_bp,  "LineWidth", 1.0); grid on; hold on;
@@ -233,7 +233,7 @@ legend("Crudo invertido (vis)","Picos");
 ```
 La primera figura es el “argumento fuerte”: picos sobre señal negra/filtrada.
 La segunda es validación: “los picos también existen en el crudo”, no son artefacto.
-## PSD Welch
+### PSD Welch
 ```
 trimSec = 2.0;
 idx0 = find(t >= trimSec, 1, "first");
@@ -283,7 +283,7 @@ Recortas el inicio (trimSec) porque ahí suele haber transitorio y deriva.
 Welch: promedia espectros y es más estable que FFT simple.
 El “truco” para que cuadre: si ya tienes RPM_pk, obligas a PSD a buscar el dominante cerca de esa frecuencia.
 Esto evita que “gane” un armónico del habla o un componente lento no respiratorio.
-## Resultados + guardado procesado
+### Resultados + guardado procesado
 ```
 fprintf("\nRESULTADOS:\n");
 if ~isnan(RPM_pk)
