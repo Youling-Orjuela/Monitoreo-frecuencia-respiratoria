@@ -342,6 +342,8 @@ Emplear múltiples sensores para monitoreo respiratorio tiene ventajas claras: m
 ## Conclusión
 El sistema desarrollado permitió capturar una señal respiratoria consistente y, mediante inversión, filtrado y detección de picos, estimar de forma coherente la frecuencia respiratoria y comparar patrones entre condiciones. En reposo se observó un comportamiento más regular y cíclico, mientras que durante la verbalización la señal se volvió más asimétrica y variable, con inhalaciones cortas y exhalaciones prolongadas, lo que confirma que el habla modifica la dinámica ventilatoria y se refleja claramente en el dominio del tiempo y en el análisis espectral (PSD) cuando se restringe a la banda respiratoria. 
 
+Aunque la práctica demuestra la viabilidad de un monitoreo respiratorio de bajo costo orientado al análisis de patrones temporales (picos, periodos, frecuencia, variabilidad e inspiración/espiración), su aplicación es principalmente académica y no diagnóstica, debido a una falta de calibración clínica y al hecho de usar un sensor no especializado en capnografía (MQ-3), ya que estas condiciones limitan la interpretación fisiológica directa (p. ej., CO₂ real/ETCO₂). Por tanto, el sistema es más adecuado para estudiar cambios en frecuencia respiratoria y comportamiento respiratorio bajo diferentes tareas que para detectar patologías con criterios clínicos.
+
 
 ## Bibliografía
 [1] J. D. Bronzino and D. R. Peterson, Biomedical Engineering Fundamentals.
