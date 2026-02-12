@@ -45,6 +45,7 @@ Aún hace falta
 • Análisis 1: Determine semejanzas y diferencias (si las hay) entre la
 frecuencia y relación entre inhalaciones y exhalaciones de un individuo
 sano bajo condiciones de reposo y durante tareas de verbalización.
+EN el proceso de la respiración normal en un adulto sano, la señal muestra una forma senoidal, mostrando que el conjunto de la inhalación y exhalación haga de la respiración un proceso cíclico. En el caso de la verbalización la inhalación es mucho más corta que la exhalación, debido a que se realiza cuando hay pausas pequeñas para descansar y poder seguir hablando asemejandose a una señal en forma de sierra.
 • Análisis 2: Evalúe el alcance y las posibles limitaciones de emplear el
 sistema construido durante la práctica para detectar patologías en seres
 humanos.
