@@ -333,7 +333,15 @@ El sistema construido tiene como alcance principal servir como una herramienta a
 
 • Pregunta 1: ¿Son los patrones respiratorios y frecuencias respiratorias iguales o diferentes en cada caso? ¿A qué se debe esto?
 
+Los patrones respiratorios y las frecuencias respiratorias suelen ser diferentes entre reposo y verbalización. En reposo la frecuencia tiende a ser más estable y el ciclo inspiración–espiración se mantiene relativamente periódico porque el objetivo principal es el intercambio gaseoso. En verbalización, la respiración se ajusta a las demandas del habla: se “recorta” la inhalación para tomar aire rápido y se “alarga” la exhalación para sostener la frase y modular la voz, lo cual cambia la relación inspiración/espiración y puede alterar la frecuencia aparente (a veces se vuelve más variable, con respiraciones más frecuentes pero menos “uniformes”, o con pausas estratégicas). Esta diferencia se debe a la coordinación entre el sistema respiratorio y el sistema fonatorio, donde la espiración se vuelve activa y controlada para mantener presión y flujo adecuados durante la producción de voz.
+
 • Pregunta 2: ¿Cuáles serían las ventajas y desventajas de emplear múltiples sensores para el monitoreo del proceso respiratorio? ¿Cuáles podrían ser las razones?
+
+Emplear múltiples sensores para monitoreo respiratorio tiene ventajas claras: mejora la robustez frente a artefactos (si uno falla o se contamina, otro puede sostener la estimación), permite separar variables (por ejemplo, un sensor para flujo/presión y otro para CO₂/temperatura), y posibilita validación cruzada (consistencia entre señales) para detectar errores o fugas. Además, con fusión de sensores se puede estimar mejor el ciclo respiratorio, la fase (inspiración/espiración) y la calidad de señal en escenarios difíciles como el habla. Sin embargo, también hay desventajas: aumenta costo, complejidad de montaje y calibración, consumo de energía, procesamiento y sincronización; además, más sensores implican más puntos de falla y más probabilidad de incomodidad para el usuario (lo que altera la respiración). Las razones para usar múltiples sensores suelen ser: necesidad de mayor precisión clínica, reducción de falsos positivos por ruido, extracción de métricas más completas (frecuencia + patrón + amplitud + CO₂ estimado) y tolerancia a condiciones reales (movimiento, verbalización, cambios de entorno).
+
+## Conclusión
+El sistema desarrollado permitió capturar una señal respiratoria consistente y, mediante inversión, filtrado y detección de picos, estimar de forma coherente la frecuencia respiratoria y comparar patrones entre condiciones. En reposo se observó un comportamiento más regular y cíclico, mientras que durante la verbalización la señal se volvió más asimétrica y variable, con inhalaciones cortas y exhalaciones prolongadas, lo que confirma que el habla modifica la dinámica ventilatoria y se refleja claramente en el dominio del tiempo y en el análisis espectral (PSD) cuando se restringe a la banda respiratoria. 
+
 
 ## Bibliografía
 [1] J. D. Bronzino and D. R. Peterson, Biomedical Engineering Fundamentals.
