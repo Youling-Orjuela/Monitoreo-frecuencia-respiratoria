@@ -25,7 +25,22 @@ El sensor de gas MQ-3 es un sensor semiconductor de óxido metálico (MOS) que p
 ## Adquisición de la señal
 Aún hace falta
 ## Resultados obtenidos
-No tenemos resultados todavía 
+### Respiración normal
+#### Captura de la señal
+[![habla1.jpg](https://i.postimg.cc/c1XqCwFM/habla1.jpg)](https://postimg.cc/s1QH0Qdv)
+#### Filtros y detección de picos
+[![habla2.jpg](https://i.postimg.cc/mZdqBRr7/habla2.jpg)](https://postimg.cc/pyFkJwzd)
+#### Dominio de la frecuencia
+[![habla3.jpg](https://i.postimg.cc/N0wCpjNB/habla3.jpg)](https://postimg.cc/QF0qMhGy)
+
+### Respiración mientras se habla
+#### Captura de la señal
+[![hablar1.jpg](https://i.postimg.cc/9Mwp23Nj/hablar1.jpg)](https://postimg.cc/mzRM3nsd)
+#### Filtros y detección de picos
+[![hablar2.jpg](https://i.postimg.cc/GpHPPwRp/hablar2.jpg)](https://postimg.cc/R3xn9YNr)
+#### Dominio de la frecuencia
+[![hablar3.jpg](https://i.postimg.cc/prYKVPfY/hablar3.jpg)](https://postimg.cc/K3j1JSsR)
+
 ## Análisis y conclusiones
 • Análisis 1: Determine semejanzas y diferencias (si las hay) entre la
 frecuencia y relación entre inhalaciones y exhalaciones de un individuo
