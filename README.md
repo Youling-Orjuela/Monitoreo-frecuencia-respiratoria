@@ -323,20 +323,15 @@ Te deja un “paquete reproducible” con todo lo necesario para un informe: se�
 [![hablar3.jpg](https://i.postimg.cc/prYKVPfY/hablar3.jpg)](https://postimg.cc/K3j1JSsR)
 
 ## Análisis y conclusiones
-• Análisis 1: Determine semejanzas y diferencias (si las hay) entre la
-frecuencia y relación entre inhalaciones y exhalaciones de un individuo
-sano bajo condiciones de reposo y durante tareas de verbalización.
-EN el proceso de la respiración normal en un adulto sano, la señal muestra una forma senoidal, mostrando que el conjunto de la inhalación y exhalación haga de la respiración un proceso cíclico. En el caso de la verbalización la inhalación es mucho más corta que la exhalación, debido a que se realiza cuando hay pausas pequeñas para descansar y poder seguir hablando asemejandose a una señal en forma de sierra.
-• Análisis 2: Evalúe el alcance y las posibles limitaciones de emplear el
-sistema construido durante la práctica para detectar patologías en seres
-humanos.
+• Análisis 1: Determine semejanzas y diferencias (si las hay) entre la frecuencia y relación entre inhalaciones y exhalaciones de un individuo sano bajo condiciones de reposo y durante tareas de verbalización.
+En un adulto sano en reposo, el patrón respiratorio suele ser relativamente regular y con un comportamiento cíclico; siendo casi senoidal, porque la ventilación está dominada por un ciclo estable de inspiración–espiración controlado principalmente por el centro respiratorio para mantener el intercambio gaseoso (O₂/CO₂) con variaciones pequeñas entre ciclos. En las señales tomadas en respiración en reposo, se ve de manera mas simétrica la fase respiratoria, con una leve diferenciación en que durante la espiración, el tiempo suele ser ligeramente más largo que en la fase de inspiración. En cambio, durante la verbalización el patrón cambia porque la respiración deja de ser solo ventilatoria y pasa a ser también respiración para el habla, tomándose inspiraciones rápidas y cortas en pausas mínimas, y se realiza una espiración más prolongada y modulada para sostener la fonación y controlar la presión subglótica. Por eso la señal se vuelve asimétrica y puede asemejarse con una señal "diente de sierra", con subidas rápidas (inhalación) y bajadas más largas y sostenidas (exhalación), además de irregularidades asociadas a frases, pausas, énfasis y esfuerzo vocal.
+
+• Análisis 2: Evalúe el alcance y las posibles limitaciones de emplear el sistema construido durante la práctica para detectar patologías en seres humanos.
 
 
-Pregunta 1: ¿Son los patrones respiratorios y frecuencias respiratorias
-iguales o diferentes en cada caso? ¿A qué se debe esto?
-• Pregunta 2: ¿Cuáles serían las ventajas y desventajas de emplear múltiples
-sensores para el monitoreo del proceso respiratorio? ¿Cuáles podrían ser
-las razones?
+• Pregunta 1: ¿Son los patrones respiratorios y frecuencias respiratorias iguales o diferentes en cada caso? ¿A qué se debe esto?
+
+• Pregunta 2: ¿Cuáles serían las ventajas y desventajas de emplear múltiples sensores para el monitoreo del proceso respiratorio? ¿Cuáles podrían ser las razones?
 
 ## Bibliografía
 [1] J. D. Bronzino and D. R. Peterson, Biomedical Engineering Fundamentals.
